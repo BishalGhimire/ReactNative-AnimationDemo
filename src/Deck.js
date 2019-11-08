@@ -10,7 +10,13 @@ import {
 
 
     const ScreenSize = Dimensions.get('window').width;
+    const SwipedThreshold = 0.35 * ScreenSize;
+    const timeSwiped = 250;
 class Deck extends Component {
+    static defaultProps = {
+        onSwipeRight: () =>{},
+        onSwipeLeft: () => {}
+    }
 
     constructor(props){
         super(props);
@@ -20,15 +26,37 @@ class Deck extends Component {
             onPanResponderMove: (event, gesture) => {
                position.setValue({x: gesture.dx, y: gesture.dy})
             },
-            onPanResponderRelease: () => {
-                this.resetPosition();
+            onPanResponderRelease: (event, gesture) => {
+                if(gesture.dx > SwipedThreshold){
+                    this.SwipeCard('right');
+                }
+                else if(gesture.dx < - SwipedThreshold){
+                    this.SwipeCard('left')
+                }
+                else{
+                    this.resetPosition();
+                }
             }
 
         })
 
         this.state = {
-            panResponder, position
+            panResponder, position, index :0
         };
+    }
+    SwipeCard = (direction) => {
+        const x = direction === 'right' ? ScreenSize : -ScreenSize;
+        Animated.timing(this.state.position, {
+            toValue: {x, y: 0},
+            duration: timeSwiped
+        }).start(() => {
+            this.onSwipeComplete(direction);
+        });
+    }
+    onSwipeComplete = (direction) => {
+        const { onSwipeLeft, onSwipeRight } = this.props;
+        const item = this.props.data[this.state.data];
+        direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item);
     }
     resetPosition = () => {
         Animated.spring(this.state.position, {
