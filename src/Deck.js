@@ -3,10 +3,13 @@ import {
     View, 
     Animated, 
     Text,
-    PanResponder
+    PanResponder,
+    Dimensions,
+    ScrollView
     } from 'react-native';
 
 
+    const ScreenSize = Dimensions.get('window').width;
 class Deck extends Component {
 
     constructor(props){
@@ -25,19 +28,39 @@ class Deck extends Component {
             panResponder, position
         };
     }
+    getCardStyle =() => {
+
+        const rotate = this.state.position.x.interpolate({
+            inputRange: [-ScreenSize *1.5, 0, ScreenSize *1.5],
+            outputRange : ['-120deg', '0deg', '120deg']
+        })
+       return {
+           ...this.state.position.getLayout(),
+           transform: [{rotate: rotate}]
+        }
+    }
 
     renderCards = () => {
-        return this.props.data.map(item =>{
+        return this.props.data.map((item, index) =>{
+            if(index === 0){
+                return(
+             <Animated.View 
+             key = {item.id}
+            style ={this.getCardStyle()}
+            {...this.state.panResponder.panHandlers}>
+             {this.props.renderCard(item)}
+            </Animated.View>
+                )
+            }
             return this.props.renderCard(item)
         })
     }
     render(){
         return(
-            <Animated.View 
-            style ={this.state.position.getLayout()}
-            {...this.state.panResponder.panHandlers}>
+            <View >
+          
                 {this.renderCards()}
-            </Animated.View>
+            </View>
         )
     }
 }
