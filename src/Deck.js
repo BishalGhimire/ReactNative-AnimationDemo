@@ -5,7 +5,8 @@ import {
     Text,
     PanResponder,
     Dimensions,
-    ScrollView
+    LayoutAnimation,
+    UIManager,
     } from 'react-native';
 
 
@@ -53,6 +54,23 @@ class Deck extends Component {
             this.onSwipeComplete(direction);
         });
     }
+    componentWillReceiveProps(nextProps){
+        //lifecycle method called whenever component is about to re-render with new set of props
+
+        if(nextProps.data !== this.props.data){
+            this.setState({index: 0})
+        }
+
+    }
+
+    componentWillUpdate(){
+        // this is strictly just for anroid devices
+        //this updates the postion of the cards smoothly after every swipe
+        UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+        LayoutAnimation.spring();
+    }
+
+
     onSwipeComplete = (direction) => {
         const { onSwipeLeft, onSwipeRight } = this.props;
         const item = this.props.data[this.state.data];
@@ -96,7 +114,7 @@ class Deck extends Component {
             }
            
             return (
-                <Animated.View key = {item.id} style = {styles.cardStyle}>
+                <Animated.View key = {item.id} style = {[styles.cardStyle, {top: 10*(ind-this.state.index)}]}>
                { this.props.renderCard(item)}
 
                 </Animated.View>
