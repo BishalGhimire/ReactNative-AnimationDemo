@@ -57,6 +57,8 @@ class Deck extends Component {
         const { onSwipeLeft, onSwipeRight } = this.props;
         const item = this.props.data[this.state.data];
         direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item);
+        this.state.position.setValue({ x: 0, y: 0})
+        this.setState({index: this.state.index + 1})
     }
     resetPosition = () => {
         Animated.spring(this.state.position, {
@@ -76,17 +78,19 @@ class Deck extends Component {
     }
 
     renderCards = () => {
-        return this.props.data.map((item, index) =>{
-            if(index === 0){
+        return this.props.data.map((item, ind) =>{
+            if(ind < this.state.index){ return null}
+            if( ind == this.state.index){
                 return(
-             <Animated.View 
-             key = {item.id}
-            style ={this.getCardStyle()}
-            {...this.state.panResponder.panHandlers}>
-             {this.props.renderCard(item)}
-            </Animated.View>
-                )
+                    <Animated.View 
+                    key = {item.id}
+                   style ={this.getCardStyle()}
+                   {...this.state.panResponder.panHandlers}>
+                    {this.props.renderCard(item)}
+                   </Animated.View>
+                       )
             }
+           
             return this.props.renderCard(item)
         })
     }
