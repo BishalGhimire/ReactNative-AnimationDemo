@@ -6,7 +6,7 @@ import { YellowBox } from 'react-native';
 YellowBox.ignoreWarnings(['Remote debugger']);
 
 const DATA = [
-  { id: 1, text: 'Card #1', uri: 'http://imgs.abduzeedo.com/files/paul0v2/unsplash/unsplash-04.jpg' },
+  { id: 1, text: 'Card #1', uri: 'https://i.4pcdn.org/hr/1501075674681.jpg' },
   { id: 2, text: 'Card #2', uri: 'http://www.fluxdigital.co/wp-content/uploads/2015/04/Unsplash.jpg' },
   { id: 3, text: 'Card #3', uri: 'http://imgs.abduzeedo.com/files/paul0v2/unsplash/unsplash-09.jpg' },
   { id: 4, text: 'Card #4', uri: 'http://imgs.abduzeedo.com/files/paul0v2/unsplash/unsplash-01.jpg' },
@@ -39,6 +39,21 @@ export default class App extends React.Component {
       </Card>
     )
   }
+  renderNoMoreCards = () => {
+    return(
+      <Card title = "All Done! ">
+        <Text style = {{marginBottom: 10}}>
+          No more cards to swipe!
+        </Text>
+        <Button
+        title = "Get more items"
+        backgroundColor = "#03A9F4"
+
+        />
+
+      </Card>
+    );
+  }
 
   render(){
     return (
@@ -46,6 +61,7 @@ export default class App extends React.Component {
         <Deck
         data = {DATA}
         renderCard = {this.renderCard}
+        renderNoMoreCards = {this.renderNoMoreCards}
         
         />
       </View>

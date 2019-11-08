@@ -76,23 +76,32 @@ class Deck extends Component {
            transform: [{rotate: rotate}]
         }
     }
+   
 
     renderCards = () => {
+        if(this.state.index>= this.props.data.length){
+            return this.props.renderNoMoreCards();
+        }
         return this.props.data.map((item, ind) =>{
             if(ind < this.state.index){ return null}
             if( ind == this.state.index){
                 return(
                     <Animated.View 
                     key = {item.id}
-                   style ={this.getCardStyle()}
+                   style ={[this.getCardStyle(), styles.cardStyle]}
                    {...this.state.panResponder.panHandlers}>
                     {this.props.renderCard(item)}
                    </Animated.View>
                        )
             }
            
-            return this.props.renderCard(item)
-        })
+            return (
+                <Animated.View key = {item.id} style = {styles.cardStyle}>
+               { this.props.renderCard(item)}
+
+                </Animated.View>
+                )
+        }).reverse();
     }
     render(){
         return(
@@ -101,6 +110,12 @@ class Deck extends Component {
                 {this.renderCards()}
             </View>
         )
+    }
+}
+const styles = {
+    cardStyle : {
+        position: 'absolute',
+        width: ScreenSize
     }
 }
 
